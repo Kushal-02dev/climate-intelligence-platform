@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect, createContext, useContext } from "react"
-import { multilingualService } from "@/lib/multilingual-service"
+import { getMultilingualService } from "@/lib/multilingual-service"
 
 interface LanguageContextType {
   currentLanguage: string
@@ -22,12 +22,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Load saved language from localStorage
     const savedLanguage = localStorage.getItem("climate-app-language")
-    if (savedLanguage && multilingualService.getSupportedLanguages()[savedLanguage]) {
+    if (savedLanguage && getMultilingualService().getSupportedLanguages()[savedLanguage]) {
       setCurrentLanguage(savedLanguage)
     } else {
       // Detect browser language
       const browserLanguage = navigator.language.split("-")[0]
-      if (multilingualService.getSupportedLanguages()[browserLanguage]) {
+      if (getMultilingualService().getSupportedLanguages()[browserLanguage]) {
         setCurrentLanguage(browserLanguage)
       }
     }
@@ -38,24 +38,24 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("climate-app-language", language)
 
     // Update document direction
-    document.documentElement.dir = multilingualService.getLanguageDirection(language)
+    document.documentElement.dir = getMultilingualService().getLanguageDirection(language)
     document.documentElement.lang = language
   }
 
   const translate = (key: string) => {
-    return multilingualService.translate(key, currentLanguage)
+    return getMultilingualService().translate(key, currentLanguage)
   }
 
   const translateText = async (text: string) => {
-    return await multilingualService.translateText(text, currentLanguage)
+    return await getMultilingualService().translateText(text, currentLanguage)
   }
 
   const getDirection = () => {
-    return multilingualService.getLanguageDirection(currentLanguage)
+    return getMultilingualService().getLanguageDirection(currentLanguage)
   }
 
   const formatNumber = (number: number) => {
-    return multilingualService.formatNumber(number, currentLanguage)
+    return getMultilingualService().formatNumber(number, currentLanguage)
   }
 
   return (

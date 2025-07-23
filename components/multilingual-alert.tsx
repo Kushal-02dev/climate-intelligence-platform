@@ -3,7 +3,7 @@
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { AlertTriangle, Info, CheckCircle } from "lucide-react"
-import { multilingualService } from "@/lib/multilingual-service"
+import { getMultilingualService } from "@/lib/multilingual-service"
 
 interface MultilingualAlertProps {
   type: "warning" | "info" | "success"
@@ -24,8 +24,8 @@ export function MultilingualAlert({
   language,
   actions = [],
 }: MultilingualAlertProps) {
-  const direction = multilingualService.getLanguageDirection(language)
-  const regionalAlert = region && eventType ? multilingualService.getRegionalAlert(region, eventType, language) : ""
+  const direction = getMultilingualService().getLanguageDirection(language)
+  const regionalAlert = region && eventType ? getMultilingualService().getRegionalAlert(region, eventType, language) : ""
 
   const getIcon = () => {
     switch (type) {
@@ -61,7 +61,7 @@ export function MultilingualAlert({
           {regionalAlert && (
             <div className="p-3 bg-[#0F2027]/50 rounded-lg border border-current/20">
               <Badge className="mb-2 bg-current text-[#0F2027]">
-                {multilingualService.translate("regionalAlert", language)}
+                {getMultilingualService().translate("regionalAlert", language)}
               </Badge>
               <p className="text-sm">{regionalAlert}</p>
             </div>
@@ -69,7 +69,7 @@ export function MultilingualAlert({
           {actions.length > 0 && (
             <div className="space-y-2">
               <div className="font-semibold text-sm">
-                {multilingualService.translate("recommendedActions", language)}:
+                {getMultilingualService().translate("recommendedActions", language)}:
               </div>
               <ul className="space-y-1">
                 {actions.map((action, index) => (

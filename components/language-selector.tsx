@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Globe, Check } from "lucide-react"
-import { multilingualService } from "@/lib/multilingual-service"
+import { getMultilingualService } from "@/lib/multilingual-service"
 
 interface LanguageSelectorProps {
   currentLanguage: string
@@ -13,7 +13,7 @@ interface LanguageSelectorProps {
 
 export function LanguageSelector({ currentLanguage, onLanguageChange }: LanguageSelectorProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const supportedLanguages = multilingualService.getSupportedLanguages()
+  const supportedLanguages = getMultilingualService().getSupportedLanguages()
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

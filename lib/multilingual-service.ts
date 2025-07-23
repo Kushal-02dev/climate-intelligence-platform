@@ -331,5 +331,12 @@ export class MultilingualService {
   }
 }
 
-// Singleton instance
-export const multilingualService = new MultilingualService()
+// Lazy singleton initialization
+let multilingualServiceInstance: MultilingualService | null = null
+
+export function getMultilingualService(): MultilingualService {
+  if (!multilingualServiceInstance) {
+    multilingualServiceInstance = new MultilingualService()
+  }
+  return multilingualServiceInstance
+}

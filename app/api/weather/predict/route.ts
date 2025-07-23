@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
-import { multilingualService } from "@/lib/multilingual-service"
+import { getMultilingualService } from "@/lib/multilingual-service"
 
 // Replace IBM Environmental Intelligence Suite with OpenWeatherMap + NASA APIs
 class OpenWeatherIntelligenceService {
@@ -554,29 +554,29 @@ class GraniteLLMService {
 
   private async generateMultilingualRecommendations(weatherData: any, region: string, language: string) {
     // Get localized recommendations from multilingual service
-    const localizedRecommendations = multilingualService.getLocalizedRecommendations(
+    const localizedRecommendations = getMultilingualService().getLocalizedRecommendations(
       weatherData.eventType,
       region,
       language,
     )
 
     // Get regional alert in local language
-    const regionalAlert = multilingualService.getRegionalAlert(region, weatherData.eventType, language)
+    const regionalAlert = getMultilingualService().getRegionalAlert(region, weatherData.eventType, language)
 
     return [
       {
-        priority: await multilingualService.translateText("High", language),
-        category: multilingualService.translate("immediateActions", language),
+        priority: await getMultilingualService().translateText("High", language),
+        category: getMultilingualService().translate("immediateActions", language),
         actions: localizedRecommendations.slice(0, 3),
         timeline: "0-6 hours",
         regionalContext: regionalAlert,
       },
       {
-        priority: await multilingualService.translateText("Medium", language),
-        category: multilingualService.translate("preparedness", language),
+        priority: await getMultilingualService().translateText("Medium", language),
+        category: getMultilingualService().translate("preparedness", language),
         actions: [
-          multilingualService.translate("emergencySupplies", language),
-          multilingualService.translate("stayIndoors", language),
+          getMultilingualService().translate("emergencySupplies", language),
+          getMultilingualService().translate("stayIndoors", language),
         ],
         timeline: "6-24 hours",
       },
@@ -586,15 +586,15 @@ class GraniteLLMService {
   private async generateEthicalConsiderations(weatherData: any, region: string, language: string) {
     const considerations = [
       {
-        aspect: multilingualService.translate("vulnerablePopulations", language),
+        aspect: getMultilingualService().translate("vulnerablePopulations", language),
         consideration: await this.getLocalizedEthicalGuidance("vulnerable_populations", language),
       },
       {
-        aspect: multilingualService.translate("resourceAllocation", language),
+        aspect: getMultilingualService().translate("resourceAllocation", language),
         consideration: await this.getLocalizedEthicalGuidance("resource_allocation", language),
       },
       {
-        aspect: multilingualService.translate("communitySupport", language),
+        aspect: getMultilingualService().translate("communitySupport", language),
         consideration: await this.getLocalizedEthicalGuidance("community_support", language),
       },
     ]
@@ -606,7 +606,7 @@ class GraniteLLMService {
     return {
       affectedPopulation: Math.floor(Math.random() * 500000) + 100000,
       vulnerableGroups: Math.floor(Math.random() * 50000) + 10000,
-      infrastructureRisk: await multilingualService.translateText("High", language),
+      infrastructureRisk: await getMultilingualService().translateText("High", language),
       economicSectors: await this.getLocalizedEconomicSectors(region, language),
       communityResources: await this.getLocalizedCommunityResources(region, language),
     }
@@ -744,7 +744,7 @@ export async function POST(request: NextRequest) {
     // Calculate economic impact (same logic)
     const economicImpact = calculateEconomicImpact(severityScore, region, eventType)
 
-    const regionalAlert = multilingualService.getRegionalAlert(region, eventType, language)
+    const regionalAlert = getMultilingualService().getRegionalAlert(region, eventType, language)
 
     const response = {
       prediction: {
@@ -792,10 +792,10 @@ function generateAlerts(severity: number, eventType: string, region: string, lan
     alerts.push({
       level: "Critical",
       message:
-        multilingualService.getRegionalAlert(region, eventType, language) ||
+        getMultilingualService().getRegionalAlert(region, eventType, language) ||
         `High-risk ${eventType} approaching ${region}. Community action required.`,
       color: "#FF6A00",
-      actions: multilingualService.getLocalizedRecommendations(eventType, region, language),
+      actions: getMultilingualService().getLocalizedRecommendations(eventType, region, language),
       language,
     })
   } else if (severity >= 5) {
@@ -803,7 +803,7 @@ function generateAlerts(severity: number, eventType: string, region: string, lan
       level: "Warning",
       message: `Moderate ${eventType} risk for ${region}. Stay prepared.`,
       color: "#D89F7B",
-      actions: multilingualService.getLocalizedRecommendations(eventType, region, language).slice(0, 2),
+      actions: getMultilingualService().getLocalizedRecommendations(eventType, region, language).slice(0, 2),
       language,
     })
   }
