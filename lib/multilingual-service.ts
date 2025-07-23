@@ -1,3 +1,5 @@
+'use client'
+
 // Multilingual Translation Service for Indian Languages
 export class MultilingualService {
   private supportedLanguages = {
